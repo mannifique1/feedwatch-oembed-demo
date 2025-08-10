@@ -6,11 +6,11 @@
   <title>Instagram oEmbed Demo</title>
   <style>
     :root { color-scheme: light dark; }
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; }
+    body { font-family: system-ui, sans-serif; margin: 24px; }
     h2 { margin: 0 0 12px; }
-    .row { display: flex; gap: 8px; align-items: center; }
-    input { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
-    button { padding: 10px 14px; border: 1px solid #ccc; border-radius: 6px; cursor: pointer; }
+    .row { display: flex; gap: 8px; }
+    input { flex: 1; padding: 8px; }
+    button { padding: 8px 14px; cursor: pointer; }
     #target { margin-top: 16px; }
   </style>
 </head>
@@ -33,31 +33,33 @@
           s = document.createElement('script');
           s.async = true;
           s.src = "https://www.instagram.com/embed.js";
+          s.onload = () => resolve();
           document.body.appendChild(s);
+        } else {
+          s.onload = () => resolve();
         }
-        s.addEventListener('load', () => resolve());
       });
     }
 
     function cleanIgUrl(url) {
       try {
         const u = new URL(url);
-        // Nur Basis-URL ohne Query, mit abschließendem Slash
         return `https://www.instagram.com${u.pathname.replace(/\/?$/, "/")}`;
-      } catch {
-        return url;
-      }
+      } catch { return url; }
     }
 
     async function load() {
-      const input = document.getElementById("postUrl");
-      const igUrl = cleanIgUrl(input.value.trim());
-
+      const igUrl = cleanIgUrl(document.getElementById("postUrl").value.trim());
       const res = await fetch(`/api/oembed?url=${encodeURIComponent(igUrl)}`);
       const data = await res.json();
 
+      // Nur den Blockquote einsetzen, Script extra laden
+      const temp = document.createElement("div");
+      temp.innerHTML = data.html || "";
+      const blockquote = temp.querySelector("blockquote");
       const target = document.getElementById("target");
-      target.innerHTML = data.html || `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+      target.innerHTML = "";
+      if (blockquote) target.appendChild(blockquote);
 
       await ensureEmbedScriptLoaded();
       if (window.instgrm && window.instgrm.Embeds) {
@@ -66,7 +68,6 @@
     }
 
     document.getElementById("btn").addEventListener("click", load);
-    // Beim ersten Laden direkt rendern
     load();
   </script>
 </body>
