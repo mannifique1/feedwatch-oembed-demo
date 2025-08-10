@@ -1,35 +1,35 @@
-<!doctype html>\
-<html lang="de">\
-<head>\
-  <meta charset="utf-8" />\
-  <meta name="viewport" content="width=device-width,initial-scale=1" />\
-  <title>Instagram oEmbed Demo</title>\
-  <style>\
-    body \{ font-family: system-ui, sans-serif; margin: 24px; \}\
-    input \{ width: 100%; max-width: 720px; padding: 10px; margin: 6px 0; \}\
-    button \{ padding: 10px 14px; cursor: pointer; \}\
-    #target \{ margin-top: 16px; \}\
-  </style>\
-</head>\
-<body>\
-  <h2>Instagram Post Embed \'96 Demo</h2>\
-  <input id="postUrl" value="https://www.instagram.com/p/DNIX1r-IeYi/">\
-  <button id="btn">Einbetten</button>\
-\
-  <div id="target"></div>\
-\
-  <script>\
-    const btn = document.getElementById("btn");\
-    async function load() \{\
-      const url = document.getElementById("postUrl").value.trim();\
-      const res = await fetch(`/api/oembed?url=$\{encodeURIComponent(url)\}`);\
-      const data = await res.json();\
-      document.getElementById("target").innerHTML = data.html || "<pre>"+JSON.stringify(data, null, 2)+"</pre>";\
-      // Instagram-Embeds initialisieren, falls embed.js geladen ist\
-      if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();\
-    \}\
-    btn.addEventListener("click", load);\
-    load(); // auto beim Laden\
-  </script>\
-</body>\
-</html>}
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Instagram oEmbed Demo</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 24px; }
+    input { width: 100%; max-width: 720px; padding: 10px; margin: 6px 0; }
+    button { padding: 10px 14px; cursor: pointer; }
+    #target { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Instagram Post Embed – Demo</h2>
+  <input id="postUrl" value="https://www.instagram.com/p/DNIX1r-IeYi/">
+  <button id="btn">Einbetten</button>
+
+  <div id="target"></div>
+
+  <script>
+    const btn = document.getElementById("btn");
+    async function load() {
+      const url = document.getElementById("postUrl").value.trim();
+      const res = await fetch(`/api/oembed?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+      document.getElementById("target").innerHTML = data.html || "<pre>"+JSON.stringify(data, null, 2)+"</pre>";
+      if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process();
+    }
+    btn.addEventListener("click", load);
+    load();
+  </script>
+</body>
+</html>
+
